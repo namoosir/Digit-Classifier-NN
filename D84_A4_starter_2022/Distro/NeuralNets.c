@@ -137,9 +137,9 @@ void feedforward_1layer(double sample[785], double (*sigmoid)(double input), dou
   for (int i = 0; i < OUTPUTS; i++) {
     double activation_value = 0;
     for (int j = 0; j < INPUTS; j++) {
-      activation_value += weights_io[j][i]*sample[j]*SIGMOID_SCALE;
+      activation_value += weights_io[j][i]*sample[j];
     }
-    activations[i] = sigmoid(activation_value);
+    activations[i] = sigmoid(activation_value*SIGMOID_SCALE);
   }
 }
 
@@ -172,23 +172,28 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
+
+   int is_tanh = 1;
+   if (sigmoid == logistic) is_tanh = 0;
+   double error = 0;
+   double final;
+
    for (int i = 0; i < INPUTS; i++) {
      for (int j = 0; j < OUTPUTS; j++) {
 
       double sig_deriv = 0;
 
-      if (sigmoid(-100) < 0) {
+      if (is_tanh) {
         sig_deriv = 1-activations[j]*activations[j];
+        if (j == label) error = 1 - activations[j];
+        else error = -1 - activations[j];
       } else {
         sig_deriv = activations[j]*(1-activations[j]);
+        if (j == label) error = 1 - activations[j];
+        else error = 0 - activations[j];
       }
 
-      double error = 0;
-
-      if (j == label) error = 1 - activations[j];
-      else error = 0 - activations[j];
-
-      double final = sample[i]*sig_deriv*error;
+      final = sample[i]*sig_deriv*error;
 
       weights_io[i][j] += ALPHA*final;
      }
@@ -369,21 +374,28 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        the network. You will need to find a way to figure out which sigmoid function you're
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
+
+   //double saved_error[10];
+   //double saved_activation[10];
+   int is_tanh = 1;
+
+   if (sigmoid == logistic) is_tanh = 0;
+
    for (int i = 0; i < units; i++) {
      for (int j = 0; j < OUTPUTS; j++) {
 
       double sig_deriv = 0;
-
-      if (sigmoid(-100) < 0) {
-        sig_deriv = 1-activations[j]*activations[j];
-      } else {
-        sig_deriv = activations[j]*(1-activations[j]);
-      }
-
       double error = 0;
 
-      if (j == label) error = 1 - activations[j];
-      else error = 0 - activations[j];
+      if (is_tanh) {
+        sig_deriv = 1-activations[j]*activations[j];
+        if (j == label) error = 1 - activations[j];
+        else error = -1 - activations[j];
+      } else {
+        sig_deriv = activations[j]*(1-activations[j]);
+        if (j == label) error = 1 - activations[j];
+        else error = 0 - activations[j];
+      }
 
       double final = h_activations[i]*sig_deriv*error;
 
@@ -396,7 +408,7 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       
       double sig_deriv_outer = 0;
 
-      if (sigmoid(-100) < 0) {
+      if (is_tanh) {
         sig_deriv_outer = 1-h_activations[j]*h_activations[j];
       } else {
         sig_deriv_outer = h_activations[j]*(1-h_activations[j]);
@@ -407,22 +419,20 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
       double total_deriv = 0;
       for (int k = 0; k < OUTPUTS; k++) {
         double sig_deriv = 0;
-
-        if (sigmoid(-100) < 0) {
-          sig_deriv = 1-activations[k]*activations[k];
-        } else {
-          sig_deriv = activations[k]*(1-activations[k]);
-        }
-
         double error = 0;
 
-        if (k == label) error = 1 - activations[k];
-        else error = 0 - activations[k];
-
-        total_deriv += weights_ho[j][k]*sig_deriv*error;
-
+      if (is_tanh) {
+        sig_deriv = 1-activations[j]*activations[j];
+        if (j == label) error = 1 - activations[j];
+        else error = -1 - activations[j];
+      } else {
+        sig_deriv = activations[j]*(1-activations[j]);
+        if (j == label) error = 1 - activations[j];
+        else error = 0 - activations[j];
       }
 
+        total_deriv += weights_ho[j][k]*sig_deriv*error;
+      }
       weights_ih[i][j] += ALPHA*final_outer*total_deriv;
      }
    }

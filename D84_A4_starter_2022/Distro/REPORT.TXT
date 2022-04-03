@@ -11,11 +11,11 @@ Student Name 2 (last, first): Kharsa, Mutasem
 
 Student number 1: 1006306007
 
-Student number 2:
+Student number 2: 1006211083
 
 UTORid 1: saqeebna
 
-UTORid 2:
+UTORid 2: kharsamu
 
 READ THIS AND SIGN YOUR NAME AT THE END:
 
@@ -23,7 +23,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-    Signed: _Nazmus Saqeeb__      _(student 2 name)_
+    Signed: _Nazmus Saqeeb__      _Mutasem Kharsa_
 
 
 (-5 marks for failing to provide the identifying
