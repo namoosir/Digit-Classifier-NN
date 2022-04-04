@@ -48,6 +48,7 @@ but explain carefully when needed.
 
 3 .- (1 marks) Which type of activation function yielded the best classification
 	       results? which one learned faster?
+		   hyperbolic did better
 
 4 .- (1 marks) Train a 2-layer network with hyperbolic-tangent activation, using
 	       150 hidden units. Report the classification rates on training and

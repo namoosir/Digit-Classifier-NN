@@ -185,12 +185,12 @@ void backprop_1layer(double sample[INPUTS], double activations[OUTPUTS], double 
 
       if (is_tanh) {
         sig_deriv = 1-activations[j]*activations[j];
-        if (j == label) error = 1 - activations[j];
-        else error = -1 - activations[j];
+        if (j == label) error = 0.8 - activations[j];
+        else error = -0.8 - activations[j];
       } else {
         sig_deriv = activations[j]*(1-activations[j]);
-        if (j == label) error = 1 - activations[j];
-        else error = 0 - activations[j];
+        if (j == label) error = 0.8 - activations[j];
+        else error = 0.2 - activations[j];
       }
 
       final = sample[i]*sig_deriv*error;
@@ -375,38 +375,49 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
     *        using. Then use the procedure discussed in lecture to compute weight updates.
     * ************************************************************************************************/
 
-   //double saved_error[10];
-   //double saved_activation[10];
+   double saved_error[10];
+   double saved_activation_deriv[10];
    int is_tanh = 1;
-
+   double sig_deriv;
+   double error;
+   double saved_weights_ho[MAX_HIDDEN][OUTPUTS];
+   
    if (sigmoid == logistic) is_tanh = 0;
 
    for (int i = 0; i < units; i++) {
      for (int j = 0; j < OUTPUTS; j++) {
 
-      double sig_deriv = 0;
-      double error = 0;
+      sig_deriv = 0;
+      error = 0;
 
       if (is_tanh) {
         sig_deriv = 1-activations[j]*activations[j];
-        if (j == label) error = 1 - activations[j];
-        else error = -1 - activations[j];
+        if (j == label) error = 0.8 - activations[j];
+        else error = -0.8 - activations[j];
       } else {
         sig_deriv = activations[j]*(1-activations[j]);
-        if (j == label) error = 1 - activations[j];
-        else error = 0 - activations[j];
+        if (j == label) error = 0.8 - activations[j];
+        else error = 0.2 - activations[j];
       }
-
+      
+      saved_error[j] = error;
+      saved_activation_deriv[j] = sig_deriv;
       double final = h_activations[i]*sig_deriv*error;
-
+      
+      saved_weights_ho[i][j] = weights_ho[i][j];
       weights_ho[i][j] += ALPHA*final;
      }
    }
 
+
+   double total_deriv;
+   double final_outer;
+   double sig_deriv_outer;
+
    for (int i = 0; i < INPUTS; i++) {
      for (int j = 0; j < units; j++) {
       
-      double sig_deriv_outer = 0;
+      sig_deriv_outer = 0;
 
       if (is_tanh) {
         sig_deriv_outer = 1-h_activations[j]*h_activations[j];
@@ -414,24 +425,11 @@ void backprop_2layer(double sample[INPUTS],double h_activations[MAX_HIDDEN], dou
         sig_deriv_outer = h_activations[j]*(1-h_activations[j]);
       }
 
-      double final_outer = sample[i]*sig_deriv_outer;
+      final_outer = sample[i]*sig_deriv_outer;
+      total_deriv = 0;
 
-      double total_deriv = 0;
       for (int k = 0; k < OUTPUTS; k++) {
-        double sig_deriv = 0;
-        double error = 0;
-
-      if (is_tanh) {
-        sig_deriv = 1-activations[j]*activations[j];
-        if (j == label) error = 1 - activations[j];
-        else error = -1 - activations[j];
-      } else {
-        sig_deriv = activations[j]*(1-activations[j]);
-        if (j == label) error = 1 - activations[j];
-        else error = 0 - activations[j];
-      }
-
-        total_deriv += weights_ho[j][k]*sig_deriv*error;
+        total_deriv += saved_weights_ho[j][k]*saved_activation_deriv[k]*saved_error[k];
       }
       weights_ih[i][j] += ALPHA*final_outer*total_deriv;
      }
