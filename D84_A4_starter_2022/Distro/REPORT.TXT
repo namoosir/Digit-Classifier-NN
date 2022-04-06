@@ -37,41 +37,66 @@ but explain carefully when needed.
                function. 
 
 	       Copy/paste the reported classification rates for:
-	 	
-	       Training data (last training round):
 
-	       Testing data:
+		   NOTE: Everything uses 50 max_iters
+	 	
+	       Training data (last training round): 0.837138
+
+	       Testing data: 0.850723
 
 2 .- (1 marks) Repeat the process using the hyperbolic tangent activation
 	       function.
 
+		   Training : 0.899192
+
+		   Testing : 0.899786
+
 
 3 .- (1 marks) Which type of activation function yielded the best classification
 	       results? which one learned faster?
-		   hyperbolic did better
+		   
+		   Hyperbolic tangent resulted in the best classification.
+		   Hyperbolic tangent also learned faster than logistic.
 
 4 .- (1 marks) Train a 2-layer network with hyperbolic-tangent activation, using
 	       150 hidden units. Report the classification rates on training and
-	       testing data just as for 1) and 2).	       
+	       testing data just as for 1) and 2).
+
+		   Training : 0.979397
+		   Testing: 0.961250	       
 	       
 5 .- (1 marks) Same as 4), except use 10 hidden units instead
 
+		Training: 0.931965
+		Testing: 0.911771
+
 6 .- (1 marks) Same as 5), except use 3 hidden units instead
+
+		Training: 0.595867
+		Testing: 0.546543
 
 7 .- (3 marks) Comment on the experiments in 4, 5, and 6, and give your conclusion
 	       regarding the effect of the number of hidden units on classification
-	       accuracy. 
+	       accuracy.
+
+		   The higher the number of hidden units that you have, the higher classification
+		   accuracy you are able to get. It seems that the rate of this increase is slows down.
+		   Meaning that from small number hidden units to bigger number will result in much better
+		   result. But from an already large number of hidden units to even larger will not matter as much.
 
 	       What is the network with 3 hidden telling you about this classification
 	       problem?
+
+		   Using only 3 hidden units underfits and gives bad classification accuracy, this tells
+		   us that our problem is more complicated than to be solved with only 3 hidden units.
 
 8 .- (3 marks) Train the best performing network you can. Use any activation function
 	       you wish, and set the number of hidden units so as to achieve the best
 	       performance.
 
-	       Number of hidden units used:
+	       Number of hidden units used:	500 with hyperbolic and 50 max_iters
 
-	       Classification rate on testing data:
+	       Classification rate on testing data:	0.966478
 
 9 .- (3 marks) Describe how you would build a network to play the cat
 	        and mouse game (move the mouse to help it survive).
@@ -82,6 +107,26 @@ but explain carefully when needed.
 		  neurons and what they encode)
 		- Describe the error function
 		- How many layers should you use?
+
+		For our input, we will be sending the enviroment. This will be
+		a vector which has the location of mouse, the cats, the cheese,
+		and the walls (always in the same order). Also note that the length
+		of this vector is always the same. If we have less cheese or cats than
+		the max then the corresponding value will be set to 0 instead of the location.
+
+		The output will have 4 neurons which will represent the four possible moves,
+		1st neuron up, 2nd down, 3rd left, 4th right.
+
+		Our error function will be squared error. We will be using it along with
+		the logistic function as our activation function. Where the output neuron
+		with highest value is picked as the direction to take, and it will penalized
+		or rewarded depending on if the direction was correct according to our 
+		dataset for training.
+
+		We will have 5 hidden layers each with around 30 neurons.
+
+		Ofcourse, this network will need a lot of training data that tells us what the best move
+		is for different game enviroments.
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -90,23 +135,23 @@ doesn't work, or what problems exist.
 	
         	Complete/Working	Partial		Not done
 
-Logistic
+Logistic		X
  activation
  
-Tanh
+Tanh			X
  activation
 
-1L Feed-forward  
+1L Feed-forward	X
 
-1L Backprop
+1L Backprop		X
 
-1L Classify
+1L Classify		X
 
-2L Feed-forward
+2L Feed-forward	X
 
-2L Backprop
+2L Backprop		X
 
-2L Classify
+2L Classify		X
 _____________________________________________________
 
 Marking:
